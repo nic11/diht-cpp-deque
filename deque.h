@@ -36,7 +36,6 @@ namespace nic11 {
         }
 
         Ref operator*() const {
-            // std::cerr << mDataStart << " " << mIndex << " " << mBufSize << "\n";
             return *(mBuf + (mDataStart + mIndex) % mBufSize);
         }
 
@@ -262,9 +261,6 @@ namespace nic11 {
             if (newSize < MINIMAL_SIZE) {
                 newSize = MINIMAL_SIZE;
             }
-
-            assert(newSize >= size());
-            // std::cerr << "realloc: " << mBufSize << " -> " << newSize << "\n";
 
             T *newBuf = new T[newSize];
             for (size_t i = 0; i < size(); ++i) {
