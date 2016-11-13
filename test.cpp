@@ -139,21 +139,19 @@ TEST_F(DequeTest, checkFrontAndBack) {
     d.push_back(1337);
     ASSERT_EQ(d.front(), 1337);
     ASSERT_EQ(d.back(), 1337);
-    d.push_back(0xfeedbea);
+    d.push_front(0xfeedbea);
     ASSERT_EQ(d.front(), 0xfeedbea);
-    ASSERT_NE(d.back(), 1337);
+    ASSERT_EQ(d.back(), 1337);
 
-    srand(random_seed());
+    srand(testing::UnitTest::GetInstance()->random_seed());
     for (int i = 0; i < 100500; ++i) {
         int v = rand();
         if (rand() & 1) {
             d.push_front(v);
             ASSERT_EQ(d.front(), v);
-            ASSERT_NE(d.back(), v);
         } else {
             d.push_back(v);
             ASSERT_EQ(d.back(), v);
-            ASSERT_NE(d.front(), v);
         }
     }
 }
