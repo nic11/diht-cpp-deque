@@ -5,9 +5,7 @@
 
 using nic11::Deque;
 
-class DequeTest : public testing::Test {};
-
-TEST_F(DequeTest, checkPushBackAndIterator) {
+TEST(DequeTest, checkPushBackAndIterator) {
     Deque<int> d;
     for (int i = -24; i < 147; ++i) {
         d.push_back(i);
@@ -19,7 +17,7 @@ TEST_F(DequeTest, checkPushBackAndIterator) {
     }
 }
 
-TEST_F(DequeTest, checkPushFrontAndReverseIterator) {
+TEST(DequeTest, checkPushFrontAndReverseIterator) {
     Deque<int> d;
     for (int i = -24; i < 147; ++i) {
         d.push_front(i);
@@ -31,7 +29,7 @@ TEST_F(DequeTest, checkPushFrontAndReverseIterator) {
     }
 }
 
-TEST_F(DequeTest, checkIterators) {
+TEST(DequeTest, checkIterators) {
     Deque<int> d(100, 1);
 
     Deque<int>::iterator a = d.begin();
@@ -69,7 +67,7 @@ TEST_F(DequeTest, checkIterators) {
     ASSERT_EQ(d.begin() + d.size(), d.end());
 }
 
-TEST_F(DequeTest, checkWithPairs) {
+TEST(DequeTest, checkWithPairs) {
     typedef std::pair<int, int> Pair;
 
     Deque<Pair> d(100);
@@ -103,7 +101,7 @@ TEST_F(DequeTest, checkWithPairs) {
     ASSERT_TRUE(std::is_sorted(d.rbegin(), d.rend()));
 }
 
-TEST_F(DequeTest, checkIteratorPostfixIncDec) {
+TEST(DequeTest, checkIteratorPostfixIncDec) {
     Deque<int> d(10);
     for (int i = 0; i < 10; ++i) {
         d[i] = i;
@@ -134,7 +132,7 @@ TEST_F(DequeTest, checkIteratorPostfixIncDec) {
     }
 }
 
-TEST_F(DequeTest, checkFrontAndBack) {
+TEST(DequeTest, checkFrontAndBack) {
     Deque<int> d;
     d.push_back(1337);
     ASSERT_EQ(d.front(), 1337);
@@ -154,6 +152,65 @@ TEST_F(DequeTest, checkFrontAndBack) {
             ASSERT_EQ(d.back(), v);
         }
     }
+}
+
+TEST(DequeTest, checkIntSort) {
+    Deque<int> d;
+    for (size_t i = 0; i < 1000000; ++i) {
+        d.push_back(rand());
+    }
+    std::sort(d.begin(), d.end());
+    ASSERT_TRUE(std::is_sorted(d.begin(), d.end()));
+    std::sort(d.begin(), d.end(), std::greater<int>());
+    ASSERT_TRUE(std::is_sorted(d.rbegin(), d.rend()));
+}
+
+const std::string randStr(size_t len) {
+    const static char alph[] = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjkzxcvbnm1234567890";
+    std::string ans;
+    for (size_t i = 0; i < len; ++i) {
+        ans.push_back(alph[rand() % (sizeof(alph) / sizeof(char))]);
+    }
+    return ans;
+}
+
+TEST(DequeTest, checkStringSort) {
+    Deque<std::string> d;
+    for (size_t i = 0; i < 5000; ++i) {
+        d.push_back(randStr(5000));
+    }
+    std::sort(d.begin(), d.end());
+    ASSERT_TRUE(std::is_sorted(d.begin(), d.end()));
+}
+
+TEST(DequeTest, checkPushBackComplexity) {
+    Deque<int> d;
+    auto start = clock();
+    size_t n1 = 5000;
+    size_t n2 = 50000;
+    size_t n3 = 1000000;
+    for (size_t i = 0; i < n1; ++i) {
+        d.push_back(rand());
+    }
+    auto afterN1 = clock();
+    for (size_t i = 0; i < n2; ++i) {
+        d.push_back(rand());
+    }
+    auto afterN2 = clock();
+    for (size_t i = 0; i < n3; ++i) {
+        d.push_back(rand());
+    }
+    auto afterN3 = clock();
+
+    double t1 = (afterN1 - start) * 1000. / CLOCKS_PER_SEC;
+    double t2 = (afterN2 - start) * 1000. / CLOCKS_PER_SEC;
+    double t3 = (afterN3 - start) * 1000. / CLOCKS_PER_SEC;
+    std::cout << n1 << " push_back-s took " << t1 << " ms; " << t1 / n1 << " ms per operation\n";
+    std::cout << n2 << " push_back-s took " << t2 << " ms; " << t2 / n2 << " ms per operation\n";
+    std::cout << n3 << " push_back-s took " << t3 << " ms; " << t3 / n3 << " ms per operation\n";
+
+    ASSERT_LT(fabs(t1 / n1 - t2 / n2), 1e-4);
+    ASSERT_LT(fabs(t1 / n1 - t3 / n3), 1e-4);
 }
 
 int main(int argc, char **argv) {
