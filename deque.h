@@ -13,25 +13,25 @@ namespace nic11 {
             : mBuf(buf), mBufSize(bufSize), mDataStart(dataStart), mIndex(index)
         {}
 
-        DequeIterator(const DequeIterator<T, Ptr, Ref> &b): mBuf(b.mBuf), mBufSize(b.mBufSize), mDataStart(b.mDataStart), mIndex(b.mIndex) {}
+        DequeIterator(const DequeIterator &b): mBuf(b.mBuf), mBufSize(b.mBufSize), mDataStart(b.mDataStart), mIndex(b.mIndex) {}
 
-        DequeIterator<T, Ptr, Ref> &operator++() {
+        DequeIterator &operator++() {
             return *this += 1;
         }
 
-        const DequeIterator<T, Ptr, Ref> operator++(int) {
-            DequeIterator<T, Ptr, Ref> c(*this);
-            operator++();
+        const DequeIterator operator++(int) {
+            DequeIterator c(*this);
+            ++*this;
             return c;
         }
 
-        DequeIterator<T, Ptr, Ref> &operator--() {
+        DequeIterator &operator--() {
             return *this -= 1;
         }
 
-        const DequeIterator<T, Ptr, Ref> operator--(int) {
-            DequeIterator<T, Ptr, Ref> c(*this);
-            operator--();
+        const DequeIterator operator--(int) {
+            DequeIterator c(*this);
+            --*this;
             return c;
         }
 
@@ -43,27 +43,27 @@ namespace nic11 {
             return &**this;
         }
 
-        DequeIterator<T, Ptr, Ref> &operator-=(ptrdiff_t s) {
+        DequeIterator &operator-=(ptrdiff_t s) {
             mIndex -= s;
             return *this;
         }
 
-        DequeIterator<T, Ptr, Ref> &operator+=(ptrdiff_t s) {
+        DequeIterator &operator+=(ptrdiff_t s) {
             mIndex += s;
             return *this;
         }
 
-        const DequeIterator<T, Ptr, Ref> operator-(ptrdiff_t s) const {
-            DequeIterator<T, Ptr, Ref> c(*this);
+        const DequeIterator operator-(ptrdiff_t s) const {
+            DequeIterator c(*this);
             return c -= s;
         }
 
-        const DequeIterator<T, Ptr, Ref> operator+(ptrdiff_t s) const {
-            DequeIterator<T, Ptr, Ref> c(*this);
+        const DequeIterator operator+(ptrdiff_t s) const {
+            DequeIterator c(*this);
             return c += s;
         }
 
-        ptrdiff_t operator-(const DequeIterator<T, Ptr, Ref> &b) const {
+        ptrdiff_t operator-(const DequeIterator &b) const {
             return ptrdiff_t(mIndex) - b.mIndex;
         }
 
@@ -71,27 +71,27 @@ namespace nic11 {
             return *(*this + s);
         }
 
-        bool operator==(const DequeIterator<T, Ptr, Ref> &b) const {
+        bool operator==(const DequeIterator &b) const {
             return mBuf == b.mBuf && mIndex == b.mIndex;
         }
 
-        bool operator!=(const DequeIterator<T, Ptr, Ref> &b) const {
+        bool operator!=(const DequeIterator &b) const {
             return !(*this == b);
         }
 
-        bool operator<(const DequeIterator<T, Ptr, Ref> &b) const {
+        bool operator<(const DequeIterator &b) const {
             return mIndex < b.mIndex;
         }
 
-        bool operator>(const DequeIterator<T, Ptr, Ref> &b) const {
+        bool operator>(const DequeIterator &b) const {
             return b < *this;
         }
 
-        bool operator<=(const DequeIterator<T, Ptr, Ref> &b) const {
+        bool operator<=(const DequeIterator &b) const {
             return !(*this > b);
         }
 
-        bool operator>=(const DequeIterator<T, Ptr, Ref> &b) const {
+        bool operator>=(const DequeIterator &b) const {
             return !(*this < b);
         }
     private:
@@ -169,19 +169,19 @@ namespace nic11 {
         }
 
         T &back() {
-            return operator[](size() - 1);
+            return (*this)[size() - 1];
         }
 
         const T &back() const {
-            return operator[](size() - 1);
+            return (*this)[size() - 1];
         }
 
         T &front() {
-            return operator[](0);
+            return (*this)[0];
         }
 
         const T &front() const {
-            return operator[](0);
+            return (*this)[0];
         }
 
         typedef DequeIterator<T, T*, T&> iterator;
